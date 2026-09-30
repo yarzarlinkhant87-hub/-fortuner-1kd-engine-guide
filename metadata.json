@@ -1,0 +1,6 @@
+{
+  "name": "Fortuner Pro Engine Torque & Spec Guide",
+  "description": "Professional torque specs, valve clearances, timing marks, and technical specs for Toyota Fortuner (1GD, 2GD, 1KD, 2KD diesel engines).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

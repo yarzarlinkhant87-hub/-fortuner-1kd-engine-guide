@@ -1,0 +1,68 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Web App Dependencies
+        run: npm ci
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Install Capacitor CLI & Core
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Initialize Capacitor Configuration
+        run: |
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.fortuner.enginespec",
+            "appName": "Fortuner Engine Spec",
+            "webDir": "dist",
+            "server": {
+              "androidScheme": "https"
+            }
+          }
+          EOF
+
+      - name: Add Android Platform
+        run: npx cap add android
+
+      - name: Copy Web Build to Android
+        run: npx cap copy android
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Build Debug APK with Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload Android APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fortuner-Engine-Spec-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
