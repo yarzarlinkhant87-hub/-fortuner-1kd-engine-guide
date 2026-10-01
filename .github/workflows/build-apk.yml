@@ -20,14 +20,13 @@ jobs:
           node-version: 20
 
       - name: Install Web App Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build Web App
         run: npm run build
 
       - name: Install Capacitor CLI & Core
-        run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
 
       - name: Initialize Capacitor Configuration
         run: |
