@@ -26,10 +26,12 @@ import {
 import { FORTUNER_ENGINES, WORKSHOP_CHECKLIST_ITEMS, EngineData, TorqueSpec } from './data/fortunerData.ts';
 import { HeadTighteningDiagram } from './components/HeadTighteningDiagram.tsx';
 import { TorqueConverter } from './components/TorqueConverter.tsx';
+import { TimingGearDiagram } from './components/TimingGearDiagram.tsx';
+import { FuelInjectionPressure } from './components/FuelInjectionPressure.tsx';
 
 export default function App() {
   const [selectedEngineId, setSelectedEngineId] = useState<string>('1kd-ftv');
-  const [activeTab, setActiveTab] = useState<'torque' | 'valve' | 'timing' | 'specs' | 'checklist'>('torque');
+  const [activeTab, setActiveTab] = useState<'torque' | 'valve' | 'timing' | 'fuel' | 'specs' | 'checklist'>('torque');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [checkedList, setCheckedList] = useState<Record<string, boolean>>({});
@@ -37,6 +39,7 @@ export default function App() {
   const [lang, setLang] = useState<'my' | 'en'>('my');
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState<boolean>(false);
+  const [showLogoModal, setShowLogoModal] = useState<boolean>(false);
 
   React.useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -105,20 +108,24 @@ export default function App() {
       <header className="border-b border-neutral-800/80 bg-neutral-900/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-white/20">
-              <Wrench className="w-5 h-5 text-white" />
-            </div>
+            <img 
+              src="/icon.svg" 
+              alt="Toyota Fortuner Engine Spec Logo" 
+              className="w-10 h-10 rounded-xl shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/40 object-cover cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => setShowLogoModal(true)}
+              title="Click to view App Logo"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-white tracking-tight text-base sm:text-lg">
                   Fortuner Pro Spec Guide
                 </span>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 hidden sm:inline">
-                  TOYOTA WORKSHOP
+                  TOYOTA 1KD-FTV
                 </span>
               </div>
               <div className="text-[11px] text-neutral-400">
-                1GD · 2GD · 1KD · 2KD Turbo Diesel Engines
+                1KD (3.0L) · 2KD (2.5L) · 1GD (2.8L) · 2GD (2.4L)
               </div>
             </div>
           </div>
@@ -260,7 +267,8 @@ export default function App() {
           {[
             { id: 'torque', labelMy: 'ပေါင်ကြပ်အားများ (Torque)', labelEn: 'Torque Specs', icon: Gauge },
             { id: 'valve', labelMy: 'ဘားအကွာအဝေး (Valve Clearance)', labelEn: 'Valve Clearance', icon: SlidersHorizontal },
-            { id: 'timing', labelMy: 'တိုင်မင်မှတ်များ (Timing Guide)', labelEn: 'Timing System', icon: RotateCw },
+            { id: 'timing', labelMy: 'တိုင်မင်ဂီယာနှင့် အမှတ်များ (Timing & Gears)', labelEn: 'Timing & Gears', icon: RotateCw },
+            { id: 'fuel', labelMy: 'အင်ဂျက်တာ/ပန့် ဖိအား (Fuel Injection)', labelEn: 'Fuel & Rail Pressure', icon: Droplet },
             { id: 'specs', labelMy: 'အထွေထွေ အင်ဂျင်အချက်အလက် (All Specs)', labelEn: 'Full Technical Specs', icon: Info },
             { id: 'checklist', labelMy: 'အလုပ်ရုံ စစ်ဆေးရန်စာရင်း (Checklist)', labelEn: 'Rebuild Checklist', icon: CheckCircle2 }
           ].map((tab) => {
@@ -539,6 +547,9 @@ export default function App() {
         {/* TAB 3: TIMING GUIDE */}
         {activeTab === 'timing' && (
           <div className="space-y-6">
+            {/* Interactive Internal Timing Gear Train Diagram with Torque Specs */}
+            <TimingGearDiagram engineId={currentEngine.id} lang={lang} />
+
             <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-800 pb-4 mb-4">
                 <div>
@@ -593,7 +604,14 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 4: FULL TECHNICAL SPECS */}
+        {/* TAB 4: FUEL INJECTION & COMMON RAIL PRESSURE */}
+        {activeTab === 'fuel' && (
+          <div className="space-y-6">
+            <FuelInjectionPressure engineId={currentEngine.id} lang={lang} />
+          </div>
+        )}
+
+        {/* TAB 5: FULL TECHNICAL SPECS */}
         {activeTab === 'specs' && (
           <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-5">
             <h3 className="font-bold text-white text-base mb-4 flex items-center gap-2">
@@ -694,18 +712,82 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-neutral-800/80 bg-neutral-900/40 py-6 text-xs text-neutral-500 mt-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} Toyota Fortuner Engine Workshop Reference Guide.</p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowLogoModal(true)}
+              className="text-cyan-400 hover:text-cyan-300 font-medium underline flex items-center gap-1.5"
+            >
+              <span>{lang === 'my' ? '🔍 App လိုဂိုတံဆိပ် ကြည့်ရန်' : '🔍 View App Logo & Icon'}</span>
+            </button>
+            <span>·</span>
+            <p>© {new Date().getFullYear()} Toyota Fortuner Engine Workshop Reference Guide.</p>
+          </div>
           <div className="flex items-center gap-4 text-neutral-400">
+            <span className="text-cyan-400 font-semibold">1KD-FTV (Default)</span>
+            <span>·</span>
+            <span>2KD-FTV</span>
+            <span>·</span>
             <span>1GD-FTV</span>
             <span>·</span>
             <span>2GD-FTV</span>
-            <span>·</span>
-            <span>1KD-FTV</span>
-            <span>·</span>
-            <span>2KD-FTV</span>
           </div>
         </div>
       </footer>
+
+      {/* App Logo & Identity Preview Modal */}
+      {showLogoModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-white">App လိုဂိုတံဆိပ် (App Icon & Identity)</span>
+              </div>
+              <button
+                onClick={() => setShowLogoModal(false)}
+                className="w-8 h-8 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="py-6 flex flex-col items-center text-center">
+              {/* Large Logo Display */}
+              <div className="relative group">
+                <img
+                  src="/icon.svg"
+                  alt="Toyota Fortuner Engine Spec App Icon"
+                  className="w-36 h-36 rounded-3xl shadow-2xl shadow-cyan-500/30 ring-4 ring-cyan-500/40"
+                />
+              </div>
+
+              <h3 className="mt-5 text-lg font-bold text-white">FORTUNER PRO SPEC GUIDE</h3>
+              <p className="text-xs text-cyan-400 font-mono mt-0.5">TOYOTA 1KD / 2KD / 1GD / 2GD</p>
+              
+              <div className="mt-4 p-3 bg-neutral-950/80 rounded-xl border border-neutral-800/80 text-left text-xs text-neutral-300 space-y-2 w-full">
+                <div className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">•</span>
+                  <span><strong>ဒီဇိုင်းပုံစံ:</strong> Engine Timing Gear (အင်ဂျင်ဂီယာသွား) နှင့် Torque Wrench (ပေါင်ဂွစပန်နာ) ကို ပေါင်းစပ်ထားသော Pro Workshop Icon။</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">•</span>
+                  <span><strong>အသုံးပြုထားသောနေရာ:</strong> ဖုန်း Home Screen ပေါ်တွင် App Icon အဖြစ်လည်းကောင်း၊ Browser Favicon နှင့် App Header တွင်လည်းကောင်း အသုံးပြုထားပါသည်။</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">•</span>
+                  <span><strong>Android APK:</strong> APK ထုတ်ယူရာတွင်လည်း ဖုန်းမျက်နှာပြင်ပေါ်တွင် ဤတံဆိပ်ဖြင့် တိုက်ရိုက် ပေါ်လာမည်ဖြစ်ပါသည်။</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowLogoModal(false)}
+                className="mt-5 w-full py-2.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-neutral-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 text-xs transition-all"
+              >
+                နားလည်ပါပြီ (Close)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

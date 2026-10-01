@@ -607,6 +607,78 @@ export const FORTUNER_ENGINES: EngineData[] = [
         cautionEn: 'Crucial for 1KD: Defective copper seats cause oil pickup screen sludging and catastrophic engine seizure.'
       },
       {
+        id: '1kd-fuel-pipes',
+        componentMy: 'အင်ဂျက်တာ ဒီဇယ်ပိုက်ခေါင်း နပ်များ (High Pressure Fuel Pipe Flare Nuts)',
+        componentEn: 'Common Rail Injection Pipe Union Flare Nuts',
+        category: 'fuel',
+        nm: 35,
+        ftlb: 25.8,
+        kgfm: 3.6,
+        criticalLevel: 'critical',
+        stepsMy: [
+          'ဆီလိုင်းပိုက်များကို လက်ဖြင့် ချည်ကိုက်အောင် အရင်လှည့်ပြီးမှ Flare nut wrench ဖြင့် 35 N·m အတိအကျ ကြပ်ပါ။',
+          'ဒီဇယ်ဆီ ယိုစိမ့်မှု လုံးဝမရှိစေရ။ ဖိအား 1600 bar ထိရှိသဖြင့် သတိထားကိုင်တွယ်ပါ။'
+        ],
+        stepsEn: [
+          'Hand-thread first to avoid cross-threading, then torque union nuts using flare-nut socket to 35 N·m.',
+          'Double check for zero fuel mist or leaks under high pressure.'
+        ]
+      },
+      {
+        id: '1kd-supply-pump-gear',
+        componentMy: 'ဒီဇယ် ဆပလိုင်းပန့် ဂီယာ နတ် (Common Rail Supply Pump Gear Nut)',
+        componentEn: 'Common Rail Supply Pump Drive Gear Nut',
+        category: 'timing',
+        nm: 64,
+        ftlb: 47.2,
+        kgfm: 6.5,
+        criticalLevel: 'critical',
+        stepsMy: [
+          'ဂီယာသွားပေါ်ရှိ ချိန်မှတ် (1 dot) ကို Idler gear No.1 နှင့် တည့်တည့်ဆုံပါ။',
+          'ဂီယာကို အထူးသော့ဖြင့် ထိန်းထားပြီး နတ်ကို 64 N·m တိကျစွာ ကြပ်ပါ။'
+        ],
+        stepsEn: [
+          'Align punch mark "1" with Idler Gear No.1 alignment mark.',
+          'Hold gear stationary with special tool and torque center nut to 64 N·m.'
+        ]
+      },
+      {
+        id: '1kd-idler-gear',
+        componentMy: 'အတွင်း အလယ်ဂီယာကြီး ထိန်းမူလီများ (Idler Gear No. 1 Thrust Plate Bolts)',
+        componentEn: 'Timing Idler Gear No. 1 Thrust Plate Mounting Bolts',
+        category: 'timing',
+        nm: 50,
+        ftlb: 36.9,
+        kgfm: 5.1,
+        criticalLevel: 'critical',
+        stepsMy: [
+          'Crankshaft gear ၏ "0-0" နှင့် Idler gear "0-0"၊ Pump gear "1" နှင့် Idler "1" ချိန်မှတ်များ တစ်ပြိုင်နက် ကိုက်ညီစေရပါမည်။',
+          'Thrust plate မူလီများကို 50 N·m ညီစွာ ကြပ်ပါ။'
+        ],
+        stepsEn: [
+          'Simultaneously mesh 0-0 marks with crankshaft and 1-1 marks with supply pump gear.',
+          'Torque thrust plate bolts evenly to 50 N·m.'
+        ]
+      },
+      {
+        id: '1kd-cam-subgear',
+        componentMy: 'ကမ်ရှပ် အတွင်းဂီယာ စကတ်ဆာ နတ်မူလီ (Camshaft Scissors Sub-Gear Preload Bolt)',
+        componentEn: 'Camshaft Driven Sub-Gear / Scissors Gear Service Bolt',
+        category: 'timing',
+        nm: 35,
+        ftlb: 25.8,
+        kgfm: 3.6,
+        criticalLevel: 'high',
+        stepsMy: [
+          'Cam gear မဖြုတ်မီ Scissors sub-gear ကို Service bolt (M6) ဖြင့် ကြိုတင်ထိန်းချုပ်ထားပါ။',
+          'တပ်ဆင်ပြီးပါက Cam bearing cap မူလီများကို 13 N·m ဖြင့် အတွင်းမှ အပြင်သို့ ကြပ်ပါ။'
+        ],
+        stepsEn: [
+          'Install service bolt (M6) into sub-gear prior to removal to lock anti-backlash spring preload.',
+          'Torque camshaft bearing caps in sequence to 13 N·m.'
+        ]
+      },
+      {
         id: '1kd-timing-tensioner',
         componentMy: 'တိုင်မင် တင်းရှင်းနာ မူလီများ (Timing Belt Auto-Tensioner Bolts)',
         componentEn: 'Timing Belt Auto-Tensioner Bolts (2 pcs)',
