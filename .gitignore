@@ -1,0 +1,4 @@
+node_modules
+dist
+.vitetmp
+*.log
