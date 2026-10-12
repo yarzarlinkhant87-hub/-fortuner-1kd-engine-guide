@@ -1,0 +1,73 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Web App Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Install Stable Capacitor 6
+        run: |
+          npm install @capacitor/core@6.2.0 @capacitor/cli@6.2.0 @capacitor/android@6.2.0 --legacy-peer-deps
+
+      - name: Prepare Clean Android Project
+        run: |
+          rm -rf android
+          npx cap add android
+          npx cap copy android
+
+      - name: Install GreatStar Custom App Icons
+        run: |
+          LOGO_SRC=""
+          if [ -f "public/greatstar_logo.jpg" ]; then
+            LOGO_SRC="public/greatstar_logo.jpg"
+          elif [ -f "public/app-logo.jpg" ]; then
+            LOGO_SRC="public/app-logo.jpg"
+          elif [ -f "public/icon-512.png" ]; then
+            LOGO_SRC="public/icon-512.png"
+          fi
+          if [ -n "$LOGO_SRC" ]; then
+            rm -rf android/app/src/main/res/mipmap-anydpi-v26
+            for dir in android/app/src/main/res/mipmap-*; do
+              if [ -d "$dir" ]; then
+                cp "$LOGO_SRC" "$dir/ic_launcher.png"
+                cp "$LOGO_SRC" "$dir/ic_launcher_round.png"
+              fi
+            done
+          fi
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Build Debug APK with Gradle
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload GreatStar Android APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GreatStar-Diesel-Pro-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
